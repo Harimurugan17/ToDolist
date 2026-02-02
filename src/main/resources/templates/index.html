@@ -2,66 +2,81 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Todo List</title>
-    <style>
-        body { font-family: sans-serif; margin: 2rem; }
-        h1 { color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .completed { text-decoration: line-through; color: #888; }
-        .btn { display: inline-block; padding: 6px 12px; margin-bottom: 0; font-size: 14px; font-weight: 400; line-height: 1.42857143; text-align: center; white-space: nowrap; vertical-align: middle; cursor: pointer; border: 1px solid transparent; border-radius: 4px; text-decoration: none; color: white; }
-        .btn-primary { background-color: #337ab7; border-color: #2e6da4; }
-        .btn-success { background-color: #5cb85c; border-color: #4cae4c; }
-        .btn-danger { background-color: #d9534f; border-color: #d43f3a; }
-        .btn-warning { background-color: #f0ad4e; border-color: #eea236; }
-        .btn-info { background-color: #5bc0de; border-color: #46b8da; }
-        
-        .priority-HIGH { color: red; font-weight: bold; }
-        .priority-MEDIUM { color: orange; font-weight: bold; }
-        .priority-LOW { color: green; font-weight: bold; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Todo App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-    <h1>Todo List</h1>
-    <a href="/add" class="btn btn-primary">Add New Todo</a>
-    
-    <form action="/" method="get" style="margin-top: 1rem; margin-bottom: 1rem; background: #f9f9f9; padding: 10px; border-radius: 5px;">
-        <input type="text" name="keyword" placeholder="Search tasks..." th:value="${keyword}" style="padding: 5px; width: 200px; border: 1px solid #ccc; border-radius: 3px;" />
-        <select name="filter" style="padding: 5px; border: 1px solid #ccc; border-radius: 3px;">
-            <option value="" th:selected="${filter == null || filter == ''}">All</option>
-            <option value="completed" th:selected="${filter == 'completed'}">Completed</option>
-            <option value="pending" th:selected="${filter == 'pending'}">Pending</option>
-        </select>
-        <button type="submit" class="btn btn-info">Search</button>
-        <a href="/" class="btn btn-warning">Reset</a>
-    </form>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Due Date</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="todo : ${todos}">
-                <td th:text="${todo.title}" th:classappend="${todo.completed} ? 'completed'"></td>
-                <td th:text="${todo.description}" th:classappend="${todo.completed} ? 'completed'"></td>
-                <td th:text="${todo.dueDate}"></td>
-                <td th:text="${todo.priority}" th:classappend="'priority-' + ${todo.priority}"></td>
-                <td th:text="${todo.completed} ? 'Completed' : 'Pending'"></td>
-                <td>
-                    <a th:href="@{/toggle/{id}(id=${todo.id})}" class="btn btn-warning" th:text="${todo.completed} ? 'Mark Pending' : 'Mark Complete'"></a>
-                    <a th:href="@{/edit/{id}(id=${todo.id})}" class="btn btn-info">Edit</a>
-                    <a th:href="@{/delete/{id}(id=${todo.id})}" class="btn btn-danger">Delete</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="container">
+        <!-- Navbar -->
+        <div class="navbar">
+            <h1>Todo List</h1>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn btn-secondary btn-sm">Logout</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <!-- Search & Filter -->
+            <form action="/" method="get" class="search-bar">
+                <input type="text" name="keyword" placeholder="Search tasks..." th:value="${keyword}" />
+                <select name="filter">
+                    <option value="" th:selected="${filter == null || filter == ''}">All Status</option>
+                    <option value="completed" th:selected="${filter == 'completed'}">Completed</option>
+                    <option value="pending" th:selected="${filter == 'pending'}">Pending</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a href="/" class="btn btn-secondary" style="width: auto;">Reset</a>
+                <a href="/add" class="btn btn-primary" style="margin-left: auto;">+ New Task</a>
+            </form>
+
+            <!-- Todo Table -->
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Due Date</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(todos)}">
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                No tasks found. Create one to get started!
+                            </td>
+                        </tr>
+                        <tr th:each="todo : ${todos}">
+                            <td>
+                                <span th:text="${todo.title}" th:classappend="${todo.completed} ? 'badge-completed'" style="font-weight: 500;"></span>
+                            </td>
+                            <td th:text="${todo.description}" style="color: var(--text-secondary);"></td>
+                            <td>
+                                <span th:text="${todo.dueDate}" style="font-family: monospace;"></span>
+                            </td>
+                            <td>
+                                <span th:text="${todo.priority}" th:classappend="'badge badge-' + ${todo.priority}"></span>
+                            </td>
+                            <td>
+                                <span th:if="${todo.completed}" class="badge" style="background-color: #D1FAE5; color: #065F46;">Done</span>
+                                <span th:unless="${todo.completed}" class="badge" style="background-color: #F3F4F6; color: #374151;">Pending</span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a th:href="@{/toggle/{id}(id=${todo.id})}" class="btn btn-sm btn-secondary" 
+                                       th:text="${todo.completed} ? 'Undo' : 'Done'"></a>
+                                    <a th:href="@{/edit/{id}(id=${todo.id})}" class="btn btn-sm btn-primary">Edit</a>
+                                    <a th:href="@{/delete/{id}(id=${todo.id})}" class="btn btn-sm btn-secondary" style="color: var(--danger-color); border-color: var(--danger-color);" onclick="return confirm('Are you sure?')">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
