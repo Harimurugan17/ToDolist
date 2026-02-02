@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+    <style>
+        body { font-family: sans-serif; margin: 2rem; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .completed { text-decoration: line-through; color: #888; }
+        .btn { display: inline-block; padding: 6px 12px; margin-bottom: 0; font-size: 14px; font-weight: 400; line-height: 1.42857143; text-align: center; white-space: nowrap; vertical-align: middle; cursor: pointer; border: 1px solid transparent; border-radius: 4px; text-decoration: none; color: white; }
+        .btn-primary { background-color: #337ab7; border-color: #2e6da4; }
+        .btn-success { background-color: #5cb85c; border-color: #4cae4c; }
+        .btn-danger { background-color: #d9534f; border-color: #d43f3a; }
+        .btn-warning { background-color: #f0ad4e; border-color: #eea236; }
+    </style>
+</head>
+<body>
+    <h1>Todo List</h1>
+    <a href="/add" class="btn btn-primary">Add New Todo</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="todo : ${todos}">
+                <td th:text="${todo.title}" th:classappend="${todo.completed} ? 'completed'"></td>
+                <td th:text="${todo.description}" th:classappend="${todo.completed} ? 'completed'"></td>
+                <td th:text="${todo.completed} ? 'Completed' : 'Pending'"></td>
+                <td>
+                    <a th:href="@{/toggle/{id}(id=${todo.id})}" class="btn btn-warning" th:text="${todo.completed} ? 'Mark Pending' : 'Mark Complete'"></a>
+                    <a th:href="@{/delete/{id}(id=${todo.id})}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
