@@ -22,15 +22,24 @@ public class Todo {
     @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
     private Priority priority;
 
+    @jakarta.persistence.ManyToOne
+    @jakarta.persistence.JoinColumn(name = "user_id")
+    private User user;
+
     public Todo() {
     }
 
-    public Todo(String title, String description, java.time.LocalDate dueDate, Priority priority) {
+    public Todo(String title, String description, java.time.LocalDate dueDate, Priority priority, User user) {
         this.title = title;
         this.description = description;
         this.completed = false;
         this.dueDate = dueDate;
         this.priority = priority;
+        this.user = user;
+    }
+
+    public Todo(String title, String description, java.time.LocalDate dueDate, Priority priority) {
+        this(title, description, dueDate, priority, null);
     }
 
     public Todo(String title, String description) {
@@ -86,5 +95,13 @@ public class Todo {
 
     public void setPriority(Priority priority) {
         this.priority = priority;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
