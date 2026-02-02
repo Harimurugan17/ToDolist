@@ -16,13 +16,28 @@ public class Todo {
     private String description;
     private boolean completed;
 
+    @jakarta.persistence.Column(name = "due_date")
+    private java.time.LocalDate dueDate;
+
+    @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
+    private Priority priority;
+
     public Todo() {
+    }
+
+    public Todo(String title, String description, java.time.LocalDate dueDate, Priority priority) {
+        this.title = title;
+        this.description = description;
+        this.completed = false;
+        this.dueDate = dueDate;
+        this.priority = priority;
     }
 
     public Todo(String title, String description) {
         this.title = title;
         this.description = description;
         this.completed = false;
+        this.priority = Priority.MEDIUM; // Default
     }
 
     public Long getId() {
@@ -55,5 +70,21 @@ public class Todo {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public java.time.LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(java.time.LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 }

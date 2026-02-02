@@ -15,16 +15,35 @@
         .btn-success { background-color: #5cb85c; border-color: #4cae4c; }
         .btn-danger { background-color: #d9534f; border-color: #d43f3a; }
         .btn-warning { background-color: #f0ad4e; border-color: #eea236; }
+        .btn-info { background-color: #5bc0de; border-color: #46b8da; }
+        
+        .priority-HIGH { color: red; font-weight: bold; }
+        .priority-MEDIUM { color: orange; font-weight: bold; }
+        .priority-LOW { color: green; font-weight: bold; }
     </style>
 </head>
 <body>
     <h1>Todo List</h1>
     <a href="/add" class="btn btn-primary">Add New Todo</a>
+    
+    <form action="/" method="get" style="margin-top: 1rem; margin-bottom: 1rem; background: #f9f9f9; padding: 10px; border-radius: 5px;">
+        <input type="text" name="keyword" placeholder="Search tasks..." th:value="${keyword}" style="padding: 5px; width: 200px; border: 1px solid #ccc; border-radius: 3px;" />
+        <select name="filter" style="padding: 5px; border: 1px solid #ccc; border-radius: 3px;">
+            <option value="" th:selected="${filter == null || filter == ''}">All</option>
+            <option value="completed" th:selected="${filter == 'completed'}">Completed</option>
+            <option value="pending" th:selected="${filter == 'pending'}">Pending</option>
+        </select>
+        <button type="submit" class="btn btn-info">Search</button>
+        <a href="/" class="btn btn-warning">Reset</a>
+    </form>
+    
     <table>
         <thead>
             <tr>
                 <th>Title</th>
                 <th>Description</th>
+                <th>Due Date</th>
+                <th>Priority</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -33,9 +52,12 @@
             <tr th:each="todo : ${todos}">
                 <td th:text="${todo.title}" th:classappend="${todo.completed} ? 'completed'"></td>
                 <td th:text="${todo.description}" th:classappend="${todo.completed} ? 'completed'"></td>
+                <td th:text="${todo.dueDate}"></td>
+                <td th:text="${todo.priority}" th:classappend="'priority-' + ${todo.priority}"></td>
                 <td th:text="${todo.completed} ? 'Completed' : 'Pending'"></td>
                 <td>
                     <a th:href="@{/toggle/{id}(id=${todo.id})}" class="btn btn-warning" th:text="${todo.completed} ? 'Mark Pending' : 'Mark Complete'"></a>
+                    <a th:href="@{/edit/{id}(id=${todo.id})}" class="btn btn-info">Edit</a>
                     <a th:href="@{/delete/{id}(id=${todo.id})}" class="btn btn-danger">Delete</a>
                 </td>
             </tr>

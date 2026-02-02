@@ -14,8 +14,16 @@ public class TodoController {
     private TodoService todoService;
 
     @GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("todos", todoService.getAllTodos());
+    public String index(@RequestParam(required = false) String keyword,
+                        @RequestParam(required = false) String filter,
+                        Model model) {
+        if ((keyword != null && !keyword.isEmpty()) || (filter != null && !filter.isEmpty())) {
+             model.addAttribute("todos", todoService.searchTodos(keyword, filter));
+             model.addAttribute("keyword", keyword);
+             model.addAttribute("filter", filter);
+        } else {
+            model.addAttribute("todos", todoService.getAllTodos());
+        }
         return "index";
     }
 
@@ -27,7 +35,20 @@ public class TodoController {
 
     @PostMapping("/add")
     public String addTodo(@ModelAttribute Todo todo) {
+        if (todo.getPriority() == null) {
+            todo.setPriority(org.example.model.Priority.MEDIUM);
+        }
         todoService.saveTodo(todo);
+        return "redirect:/";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editTodoForm(@PathVariable Long id, Model model) {
+        java.util.Optional<Todo> todo = todoService.getTodoById(id);
+        if (todo.isPresent()) {
+            model.addAttribute("todo", todo.get());
+            return "add-todo";
+        }
         return "redirect:/";
     }
 

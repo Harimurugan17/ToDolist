@@ -2,19 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add Todo</title>
+    <title>Add/Edit Todo</title>
     <style>
         body { font-family: sans-serif; margin: 2rem; }
         form { max-width: 400px; margin-top: 1rem; }
         div { margin-bottom: 1rem; }
         label { display: block; margin-bottom: .5rem; }
-        input[type="text"] { width: 100%; padding: .5rem; border: 1px solid #ccc; border-radius: 4px; }
+        input[type="text"], input[type="date"], select { width: 100%; padding: .5rem; border: 1px solid #ccc; border-radius: 4px; }
         .btn { display: inline-block; padding: 6px 12px; font-size: 14px; text-align: center; cursor: pointer; border: 1px solid transparent; border-radius: 4px; text-decoration: none; color: white; background-color: #5cb85c; border-color: #4cae4c; }
     </style>
 </head>
 <body>
-    <h1>Add New Todo</h1>
+    <h1 th:text="${todo.id} ? 'Edit Todo' : 'Add New Todo'">Add New Todo</h1>
     <form action="#" th:action="@{/add}" th:object="${todo}" method="post">
+        <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{completed}" />
+        
         <div>
             <label for="title">Title</label>
             <input type="text" id="title" th:field="*{title}" required />
@@ -22,6 +25,17 @@
         <div>
             <label for="description">Description</label>
             <input type="text" id="description" th:field="*{description}" />
+        </div>
+        <div>
+            <label for="dueDate">Due Date</label>
+            <input type="date" id="dueDate" th:field="*{dueDate}" />
+        </div>
+        <div>
+            <label for="priority">Priority</label>
+            <select id="priority" th:field="*{priority}">
+                <option th:each="p : ${T(org.example.model.Priority).values()}" 
+                        th:value="${p}" th:text="${p}"></option>
+            </select>
         </div>
         <div>
             <button type="submit" class="btn">Save</button>

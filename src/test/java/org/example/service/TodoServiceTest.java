@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.model.Priority;
 import org.example.model.Todo;
 import org.example.repository.TodoRepository;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +40,40 @@ class TodoServiceTest {
     }
 
     @Test
-    void saveTodo() {
+    void searchTodos_KeywordOnly() {
+        Todo todo = new Todo("Buy Milk", "Groceries");
+        when(todoRepository.findByTitleContainingIgnoreCase("Milk")).thenReturn(Collections.singletonList(todo));
+
+        List<Todo> result = todoService.searchTodos("Milk", "");
+
+        assertEquals(1, result.size());
+        verify(todoRepository).findByTitleContainingIgnoreCase("Milk");
+    }
+
+    @Test
+    void searchTodos_FilterCompleted() {
+        when(todoRepository.findByCompleted(true)).thenReturn(Collections.emptyList());
+
+        todoService.searchTodos(null, "completed");
+
+        verify(todoRepository).findByCompleted(true);
+    }
+    
+    @Test
+    void getTodoById() {
+        Long id = 1L;
         Todo todo = new Todo("Task 1", "Desc 1");
+        when(todoRepository.findById(id)).thenReturn(Optional.of(todo));
+
+        Optional<Todo> result = todoService.getTodoById(id);
+
+        assertTrue(result.isPresent());
+        assertEquals("Task 1", result.get().getTitle());
+    }
+
+    @Test
+    void saveTodo() {
+        Todo todo = new Todo("Task 1", "Desc 1", LocalDate.now(), Priority.HIGH);
         
         todoService.saveTodo(todo);
 
@@ -58,7 +93,6 @@ class TodoServiceTest {
     void toggleTodo() {
         Long id = 1L;
         Todo todo = new Todo("Task 1", "Desc 1");
-        // Initial state is false
         assertFalse(todo.isCompleted());
         todo.setId(id);
 

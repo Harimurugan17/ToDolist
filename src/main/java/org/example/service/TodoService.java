@@ -17,6 +17,28 @@ public class TodoService {
     public List<Todo> getAllTodos() {
         return todoRepository.findAll();
     }
+    
+    public List<Todo> searchTodos(String keyword, String filter) {
+        if (keyword != null && !keyword.isEmpty()) {
+            if ("completed".equalsIgnoreCase(filter)) {
+                return todoRepository.findByTitleContainingIgnoreCaseAndCompleted(keyword, true);
+            } else if ("pending".equalsIgnoreCase(filter)) {
+                return todoRepository.findByTitleContainingIgnoreCaseAndCompleted(keyword, false);
+            }
+            return todoRepository.findByTitleContainingIgnoreCase(keyword);
+        } else {
+            if ("completed".equalsIgnoreCase(filter)) {
+                return todoRepository.findByCompleted(true);
+            } else if ("pending".equalsIgnoreCase(filter)) {
+                return todoRepository.findByCompleted(false);
+            }
+        }
+        return todoRepository.findAll();
+    }
+
+    public Optional<Todo> getTodoById(Long id) {
+        return todoRepository.findById(id);
+    }
 
     public void saveTodo(Todo todo) {
         todoRepository.save(todo);

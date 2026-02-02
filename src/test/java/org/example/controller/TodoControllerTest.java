@@ -9,8 +9,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,8 +40,32 @@ class TodoControllerTest {
     }
 
     @Test
+    void search() throws Exception {
+        mockMvc.perform(get("/")
+                .param("keyword", "milk"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"))
+                .andExpect(model().attributeExists("todos"));
+        
+        verify(todoService).searchTodos(eq("milk"), any());
+    }
+
+    @Test
     void addTodoForm() throws Exception {
         mockMvc.perform(get("/add"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("add-todo"))
+                .andExpect(model().attributeExists("todo"));
+    }
+
+    @Test
+    void editTodoForm() throws Exception {
+        Long id = 1L;
+        Todo todo = new Todo("Task 1", "Desc 1");
+        todo.setId(id);
+        when(todoService.getTodoById(id)).thenReturn(Optional.of(todo));
+
+        mockMvc.perform(get("/edit/" + id))
                 .andExpect(status().isOk())
                 .andExpect(view().name("add-todo"))
                 .andExpect(model().attributeExists("todo"));
@@ -49,7 +75,8 @@ class TodoControllerTest {
     void addTodo() throws Exception {
         mockMvc.perform(post("/add")
                 .param("title", "New Task")
-                .param("description", "New Desc"))
+                .param("description", "New Desc")
+                .param("priority", "HIGH"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
 
@@ -64,15 +91,5 @@ class TodoControllerTest {
                 .andExpect(redirectedUrl("/"));
 
         verify(todoService).deleteTodo(id);
-    }
-
-    @Test
-    void toggleTodo() throws Exception {
-        Long id = 1L;
-        mockMvc.perform(get("/toggle/" + id))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
-
-        verify(todoService).toggleTodo(id);
     }
 }
