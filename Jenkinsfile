@@ -5,6 +5,10 @@ pipeline {
     //    jdk 'jdk21' 
     // }
 
+    triggers {
+        pollSCM '* * * * *'
+    }
+
     stages {
         stage('Checkout') {
             steps {
