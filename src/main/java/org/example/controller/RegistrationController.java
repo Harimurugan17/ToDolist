@@ -36,4 +36,5 @@ public class RegistrationController {
     public String login() {
         return "login";
     }
+
 }

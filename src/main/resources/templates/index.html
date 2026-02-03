@@ -11,9 +11,12 @@
         <!-- Navbar -->
         <div class="navbar">
             <h1>Todo List</h1>
-            <form th:action="@{/logout}" method="post" style="margin: 0;">
-                <button type="submit" class="btn btn-secondary btn-sm">Logout</button>
-            </form>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <a href="/details" class="btn btn-primary btn-sm" style="text-decoration: none; color: white;">Student Details</a>
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn btn-secondary btn-sm">Logout</button>
+                </form>
+            </div>
         </div>
 
         <div class="card">

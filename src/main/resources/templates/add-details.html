@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Details - Todo App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div class="container" style="max-width: 600px;">
+        <div class="card">
+            <h1>Add New Details</h1>
+            
+            <form th:action="@{/details}" th:object="${details}" method="post">
+                
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" th:field="*{name}" placeholder="Enter Name" required />
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" th:field="*{subject}" placeholder="Enter Subject" required />
+                </div>
+                
+                <div class="form-group">
+                    <label for="rollNum">Roll Number</label>
+                    <input type="number" id="rollNum" th:field="*{rollNum}" required />
+                </div>
+                
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary">Save Details</button>
+                    <a href="/details" class="btn btn-secondary" style="width: auto; flex: 1; text-align: center;">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

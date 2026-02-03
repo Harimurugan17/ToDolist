@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Details List - Todo App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div class="container" style="max-width: 800px;">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h1>Student Details</h1>
+                <a href="/details/new" class="btn btn-primary">Add New</a>
+            </div>
+            
+            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem;">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
+                        <th style="padding: 0.75rem;">ID</th>
+                        <th style="padding: 0.75rem;">Name</th>
+                        <th style="padding: 0.75rem;">Subject</th>
+                        <th style="padding: 0.75rem;">Roll Num</th>
+                        <th style="padding: 0.75rem;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="detail : ${detailsList}" style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 0.75rem;" th:text="${detail.id}">1</td>
+                        <td style="padding: 0.75rem;" th:text="${detail.name}">John Doe</td>
+                        <td style="padding: 0.75rem;" th:text="${detail.subject}">Math</td>
+                        <td style="padding: 0.75rem;" th:text="${detail.rollNum}">101</td>
+                        <td style="padding: 0.75rem;">
+                            <a th:href="@{/details/delete/{id}(id=${detail.id})}" 
+                               class="btn btn-danger" 
+                               style="background-color: #ef4444; color: white; padding: 0.25rem 0.5rem; text-decoration: none; border-radius: 0.25rem; font-size: 0.875rem;"
+                               onclick="return confirm('Are you sure?')">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div th:if="${#lists.isEmpty(detailsList)}" style="text-align: center; padding: 2rem; color: #6b7280;">
+                <p>No details found. Add one to get started!</p>
+            </div>
+            
+            <div style="margin-top: 1.5rem;">
+                <a href="/" class="btn btn-secondary">Back to Todos</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
