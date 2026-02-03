@@ -34,4 +34,10 @@ pipeline {
             archiveArtifacts artifacts: 'build/libs/*.jar', allowEmptyArchive: false
         }
     }
+//     stages{
+//         stage('build'){
+//             steps {
+//                 bat './gradlew bootrun'}
+//
+//         }}
 }
